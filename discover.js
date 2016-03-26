@@ -7,8 +7,15 @@ var SensorTag = require('sensortag');;
 var USE_READ = true;
 
 SensorTag.discoverAll(function(sensorTag) {
-  console.log('discovered: ' + sensorTag);
-
+  sensor = sensorTag.id.toUpperCase()
+  a1 = sensor.substring(0,2)
+  a2 = sensor.substring(2,4)
+  a3 = sensor.substring(4,6)
+  a4 = sensor.substring(6,8)
+  a5 = sensor.substring(8,10)
+  a6 = sensor.substring(10,12)
+  uuid = a1 + ":" + a2 + ":" + a3 + ":" + a4 + ":" + a5 + ":" + a6
+  console.log(uuid);
 });
 
 
