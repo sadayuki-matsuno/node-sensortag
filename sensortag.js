@@ -203,12 +203,13 @@ console.info("start");
 SensorTag.discoverAll(function(sensorTag) {
 //SensorTag.discoverWithFilter((function(sensorTag) {
   console.dir("start search")
+  console.info("found: connect and setup ... (waiting 5~10 seconds)");
 
 //}, function(sensorTag) {
-  console.info("found: connect and setup ... (waiting 5~10 seconds)");
-  console.dir(sensorTag._peripheral._noble.address)
   
-  if (ids.indexOf(sensorTag._peripheral._noble.address) == -1 ){
+  if (ids.indexOf(sensorTag._peripheral.address.toUpperCase()) != -1 ){
+  console.dir('sensorTag._peripheral.address')
+  console.dir(sensorTag._peripheral.address.toUpperCase())
   sensorTag.connectAndSetup(function() {
   
   
