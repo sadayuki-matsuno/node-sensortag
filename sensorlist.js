@@ -49,5 +49,6 @@ var group17 = [
 "B0:B4:48:D2:26:87",
 ]
 
+var all = group234.concat(group056,group17)
 
-module.exports = group17
+module.exports = all

@@ -7,6 +7,8 @@
 var mqtt    = require('mqtt');
 var async = require('async');
 var client  = mqtt.connect('mqtt://localhost');
+var conLimit = 6
+var conNum = 0
 
 function getTopicName(sensorTag, shortName) {
   var myAddrArr = sensorTag.address.split(":")
@@ -54,7 +56,7 @@ function ti_gyroscope(conned_obj) {
 function ti_ir_temperature(conned_obj) {
   var shortname = "tmp"
   var topic = getTopicName(conned_obj, shortname)
-  var period = 100; // ms
+  var period = 300; // ms
   conned_obj.enableIrTemperature(function() {
     conned_obj.setIrTemperaturePeriod(period, function() {
       conned_obj.notifyIrTemperature(function() {
@@ -66,7 +68,7 @@ function ti_ir_temperature(conned_obj) {
 //物体温度
 //            console.log('\tobject temperature = %d °C', objectTemperature.toFixed(1));
 //周辺温度
- //           console.log('\tambient temperature = %d °C', ambientTemperature.toFixed(1));
+//           console.log('\tambient temperature = %d °C', ambientTemperature.toFixed(1));
         });
       });
     });
@@ -90,6 +92,7 @@ function ti_accelerometer(conned_obj) {
 //            console.log('\taccel_y = %d G', y.toFixed(1));
 //            console.log('\taccel_z = %d G', z.toFixed(1));
         });
+            console.dir(n - n2)
       });
     });
   });
@@ -200,35 +203,43 @@ console.info("start");
 //console.info("waiting for connect from " + myAddress);
 //SensorTag.discoverByUuid(myUUID, function(sensorTag) {
 //SensorTag.discoverByAddress(myAddress, function(sensorTag) {
-SensorTag.discoverAll(function(sensorTag) {
+//SensorTag.discoverAll(function(sensorTag) {
+function onDiscover(sensorTag) {
 //SensorTag.discoverWithFilter((function(sensorTag) {
-  console.dir("start search")
-  console.info("found: connect and setup ... (waiting 5~10 seconds)");
+//  console.dir("start search")
+//  console.info("found: connect and setup ... (waiting 5~10 seconds)");
 
 //}, function(sensorTag) {
   
   if (ids.indexOf(sensorTag._peripheral.address.toUpperCase()) != -1 ){
-  console.dir('sensorTag._peripheral.address')
-  console.dir(sensorTag._peripheral.address.toUpperCase())
-  sensorTag.connectAndSetup(function() {
-  
-  
-//if connected, LED turn to Red.
-//  sensorTag.writeIoConfig(1, function() {
-//    sensorTag.writeIoData(1)
-//  });
-    sensorTag.readDeviceName(function(error, deviceName) {
-      console.info("connect: " + deviceName);
-      ti_simple_key(sensorTag);
-      ti_gyroscope(sensorTag);
-      ti_ir_temperature(sensorTag);
-      ti_accelerometer(sensorTag);
-      ti_humidity(sensorTag);
-      ti_magnetometer(sensorTag);
-      ti_barometric_pressure(sensorTag);
-      ti_luxometer(sensorTag);
+    conNum++
+    console.dir(conNum)
+    if (conNum > conLimit) {
+      console.dir("reach connection limit :" + conLimit)
+      SensorTag.stopDiscoverAll(onDiscover);
+   //   return
+    }
+//  console.dir('sensorTag._peripheral.address')
+    console.dir(sensorTag._peripheral.address.toUpperCase())
+    sensorTag.connectAndSetup(function() {
+    
+    
+  //if connected, LED turn to Red.
+    sensorTag.writeIoConfig(1, function() {
+      sensorTag.writeIoData(1)
     });
-  });
+      sensorTag.readDeviceName(function(error, deviceName) {
+  //      console.info("connect: " + deviceName);
+        ti_simple_key(sensorTag);
+        ti_gyroscope(sensorTag);
+        ti_ir_temperature(sensorTag);
+        ti_accelerometer(sensorTag);
+        ti_humidity(sensorTag);
+        ti_magnetometer(sensorTag);
+        ti_barometric_pressure(sensorTag);
+        ti_luxometer(sensorTag);
+      });
+    });
   }
   /* In case of SensorTag PowerOff or out of range when fired `onDisconnect` */
   sensorTag.once("disconnect", function() {
@@ -236,4 +247,9 @@ SensorTag.discoverAll(function(sensorTag) {
     client.end();
     process.exit(0);
   });
-});
+};
+
+SensorTag.discoverAll(onDiscover)
+if (conNum > conLimit) {
+  console.dir("stopDiscoverAll")
+}
