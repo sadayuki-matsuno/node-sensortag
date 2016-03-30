@@ -92,7 +92,6 @@ function ti_accelerometer(conned_obj) {
 //            console.log('\taccel_y = %d G', y.toFixed(1));
 //            console.log('\taccel_z = %d G', z.toFixed(1));
         });
-            console.dir(n - n2)
       });
     });
   });
