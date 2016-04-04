@@ -6,7 +6,7 @@
 //var myAddress = process.env["TI_ADDRESS"] || "YOUR_TI_sensor_tag_ADDRESS";
 var mqtt    = require('mqtt');
 var async = require('async');
-var client  = mqtt.connect('mqtt://localhost');
+var client  = mqtt.connect('mqtt://10.39.13.1');
 var conLimit = 6
 var conNum = 0
 
