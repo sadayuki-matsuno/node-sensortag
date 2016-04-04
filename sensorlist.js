@@ -69,4 +69,4 @@ var group17C = [
 
 var all = group234A.concat(group234B,group234C,group056A,group056B,group056C,group17A,group17B,group17C)
 
-module.exports = all
+module.exports = group234A

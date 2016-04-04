@@ -147,7 +147,7 @@ console.info(">> STOP: Ctrl+C or SensorTag power off");
 console.info("start");
 function onDiscover(sensorTag) {
   
-//  if (ids.indexOf(sensorTag._peripheral.address.toUpperCase()) != -1 ){
+  if (ids.indexOf(sensorTag._peripheral.address.toUpperCase()) != -1 ){
     conNum++
     console.dir(conNum)
     if (conNum > conLimit) {
@@ -174,7 +174,7 @@ function onDiscover(sensorTag) {
         ti_luxometer(sensorTag);
       });
     });
- // }
+  }
   /* In case of SensorTag PowerOff or out of range when fired `onDisconnect` */
   sensorTag.once("disconnect", function() {
     console.info("disconnect and exit");
