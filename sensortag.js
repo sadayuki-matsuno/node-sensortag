@@ -7,7 +7,7 @@
 var mqtt    = require('mqtt');
 var async = require('async');
 var client  = mqtt.connect('mqtt://localhost');
-var conLimit = 2
+var conLimit = 6
 var conNum = 0
 
 function getTopicName(sensorTag, shortName) {
@@ -26,7 +26,7 @@ function ti_simple_key(conned_obj) {
     });
   });
 }
- 
+
 function ti_gyroscope(conned_obj) {
   var shortname = "gyr"
   var topic = getTopicName(conned_obj, shortname)
@@ -42,7 +42,7 @@ function ti_gyroscope(conned_obj) {
     });
   });
 }
- 
+
 function ti_ir_temperature(conned_obj) {
   var shortname = "tmp"
   var topic = getTopicName(conned_obj, shortname)
@@ -58,7 +58,7 @@ function ti_ir_temperature(conned_obj) {
     });
   });
 }
- 
+
 function ti_accelerometer(conned_obj) {
   var shortname = "acc"
   var topic = getTopicName(conned_obj, shortname)
@@ -74,7 +74,7 @@ function ti_accelerometer(conned_obj) {
     });
   });
 }
- 
+
 function ti_humidity(conned_obj) {
   var shortname = "hmd"
   var topic = getTopicName(conned_obj, shortname)
@@ -90,7 +90,7 @@ function ti_humidity(conned_obj) {
     });
   });
 }
- 
+
 function ti_magnetometer(conned_obj) {
   var shortname = "mgn"
   var topic = getTopicName(conned_obj, shortname)
@@ -106,7 +106,7 @@ function ti_magnetometer(conned_obj) {
     });
   });
 }
- 
+
 function ti_barometric_pressure(conned_obj) {
   var shortname = "brm"
   var topic = getTopicName(conned_obj, shortname)
@@ -122,7 +122,7 @@ function ti_barometric_pressure(conned_obj) {
     });
   });
 }
- 
+
 function ti_luxometer(conned_obj) {
   var shortname = "lux"
   var topic = getTopicName(conned_obj, shortname)
@@ -138,7 +138,8 @@ function ti_luxometer(conned_obj) {
     });
   });
 }
- 
+
+
 var SensorTag = require('sensortag');
 var ids = require("./sensorlist")
 var asynchronous = true;
@@ -146,7 +147,7 @@ var asynchronous = true;
 console.info(">> STOP: Ctrl+C or SensorTag power off");
 console.info("start");
 function onDiscover(sensorTag) {
-  
+
   if (ids.indexOf(sensorTag._peripheral.address.toUpperCase()) != -1 ){
     conNum++
     console.dir(conNum)
@@ -157,15 +158,13 @@ function onDiscover(sensorTag) {
     }
     console.dir(sensorTag._peripheral.address.toUpperCase())
     sensorTag.connectAndSetup(function() {
-      //if connected, LED turn to Red.
-      console.dir("1")
-      sensorTag.writeIoConfig(1, function() {
-        console.dir("2")
-        sensorTag.writeIoData(1)
-      });
-      console.dir("3")
+
+
+  //if connected, LED turn to Red.
+    sensorTag.writeIoConfig(1, function() {
+      sensorTag.writeIoData(1)
+    });
       sensorTag.readDeviceName(function(error, deviceName) {
-        console.dir("4")
         ti_simple_key(sensorTag);
         ti_gyroscope(sensorTag);
         ti_ir_temperature(sensorTag);
@@ -178,11 +177,11 @@ function onDiscover(sensorTag) {
     });
   }
   /* In case of SensorTag PowerOff or out of range when fired `onDisconnect` */
-//  sensorTag.once("disconnect", function() {
-//    console.info("disconnect and exit");
-////    client.end();
-////    process.exit(0);
-//  });
+  sensorTag.once("disconnect", function() {
+    console.info("disconnect and exit");
+    client.end();
+    process.exit(0);
+  });
 };
 
 SensorTag.discoverAll(onDiscover)
