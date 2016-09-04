@@ -9,7 +9,7 @@ var async = require('async');
 var client  = mqtt.connect('mqtt://localhost');
 
 
-var ids = require("./private_ids")
+var ids = require("../sensorlist.js")
 myAddress = ids[0] 
 myAddrArr = myAddress.split(":")
 shortId = myAddrArr[myAddrArr.length-2] + myAddrArr[myAddrArr.length-1]

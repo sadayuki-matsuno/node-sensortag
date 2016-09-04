@@ -6,8 +6,8 @@
 //var myAddress = process.env["TI_ADDRESS"] || "YOUR_TI_sensor_tag_ADDRESS";
 var mqtt    = require('mqtt');
 var async = require('async');
-var client  = mqtt.connect('mqtt://10.39.13.1');
-var conLimit = 6
+var client  = mqtt.connect('mqtt://localhost');
+var conLimit = 2
 var conNum = 0
 
 function getTopicName(sensorTag, shortName) {
@@ -157,13 +157,15 @@ function onDiscover(sensorTag) {
     }
     console.dir(sensorTag._peripheral.address.toUpperCase())
     sensorTag.connectAndSetup(function() {
-    
-    
-  //if connected, LED turn to Red.
-    sensorTag.writeIoConfig(1, function() {
-      sensorTag.writeIoData(1)
-    });
+      //if connected, LED turn to Red.
+      console.dir("1")
+      sensorTag.writeIoConfig(1, function() {
+        console.dir("2")
+        sensorTag.writeIoData(1)
+      });
+      console.dir("3")
       sensorTag.readDeviceName(function(error, deviceName) {
+        console.dir("4")
         ti_simple_key(sensorTag);
         ti_gyroscope(sensorTag);
         ti_ir_temperature(sensorTag);
@@ -176,11 +178,11 @@ function onDiscover(sensorTag) {
     });
   }
   /* In case of SensorTag PowerOff or out of range when fired `onDisconnect` */
-  sensorTag.once("disconnect", function() {
-    console.info("disconnect and exit");
-    client.end();
-    process.exit(0);
-  });
+//  sensorTag.once("disconnect", function() {
+//    console.info("disconnect and exit");
+////    client.end();
+////    process.exit(0);
+//  });
 };
 
 SensorTag.discoverAll(onDiscover)
